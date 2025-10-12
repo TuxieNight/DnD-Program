@@ -1,5 +1,5 @@
 # D&D Program
-Riley Howardsmith and Peyton Howardsmith created this program in 11th grade of high school and worked on it over the summer. We were inspired to make this game by our first D&D experience. At the time that we made this game, we were not too experienced in D&D and had to research some of the rules.
+Riley Howardsmith and Peyton Howardsmith created this program in 11th grade of high school (2021-2022) and worked on it over the summer. We were inspired to make this game by our first D&D experience. At the time that we made this game, we were not too experienced in D&D and had to research some of the rules.
 <br><br>
 Some things we would do if we were to continue working on this project:
 <ol>
