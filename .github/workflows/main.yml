@@ -1,0 +1,58 @@
+name: Build and Update JAR
+
+on:
+  push:
+    branches:
+      - main # Change to 'master' if your default branch is master
+    paths:
+      - 'src/**' # Only run when source code changes (prevents infinite loops)
+      - 'res/**'
+
+# Give the workflow permission to commit the updated JAR back to your repo
+permissions:
+  contents: write
+
+jobs:
+  build-jar:
+    runs-on: ubuntu-latest
+
+    env:
+      JAR_NAME: my-game.jar
+      MAIN_CLASS: com.example.Main # <-- REPLACE with your actual main class
+      SRC_DIR: src                  # <-- Folder containing your .java files
+      RES_DIR: res                  # <-- Optional: folder with images/sounds
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 8 JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Compile and package JAR
+        run: |
+          mkdir -p build
+          find "$SRC_DIR" -name "*.java" > sources.txt
+          javac -d build @sources.txt
+          
+          # Copy assets into build/ if the resource folder exists
+          if [ -d "$RES_DIR" ]; then
+            cp -r "$RES_DIR"/* build/
+          fi
+          
+          jar cfe "$JAR_NAME" "$MAIN_CLASS" -C build .
+
+      - name: Commit and push updated JAR
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add "$JAR_NAME"
+          
+          # Only commit if the JAR actually changed
+          if ! git diff --staged --quiet; then
+            git commit -m "Auto-update $JAR_NAME"
+            git push
+          fi
