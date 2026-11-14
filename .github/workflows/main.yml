@@ -1,19 +1,24 @@
-name: Build and Update JAR
+name: Build and Deploy Java Game to Pages
 
 on:
   push:
     branches:
       - main # Change to 'master' if your default branch is master
-    paths:
-      - 'src/**' # Only run when source code changes (prevents infinite loops)
-      - 'res/**'
+  workflow_dispatch: # Allows you to trigger a deploy manually from the Actions tab
 
-# Give the workflow permission to commit the updated JAR back to your repo
+# Required permissions to deploy directly to GitHub Pages
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# Prevents overlapping deployments if you push multiple times quickly
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build-jar:
+  build:
     runs-on: ubuntu-latest
 
     env:
@@ -24,10 +29,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Java 8 JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: '8'
           distribution: 'temurin'
@@ -37,22 +42,32 @@ jobs:
           mkdir -p build
           find "$SRC_DIR" -name "*.java" > sources.txt
           javac -d build @sources.txt
-          
+
           # Copy assets into build/ if the resource folder exists
           if [ -d "$RES_DIR" ]; then
             cp -r "$RES_DIR"/* build/
           fi
-          
+
           jar cfe "$JAR_NAME" "$MAIN_CLASS" -C build .
 
-      - name: Commit and push updated JAR
+      - name: Assemble Pages site folder
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add "$JAR_NAME"
-          
-          # Only commit if the JAR actually changed
-          if ! git diff --staged --quiet; then
-            git commit -m "Auto-update $JAR_NAME"
-            git push
-          fi
+          mkdir -p _site
+          cp index.html "$JAR_NAME" _site/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
