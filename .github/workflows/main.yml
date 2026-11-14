@@ -23,9 +23,8 @@ jobs:
 
     env:
       JAR_NAME: my-game.jar
-      MAIN_CLASS: com.example.Main # <-- REPLACE with your actual main class
-      SRC_DIR: src                  # <-- Folder containing your .java files
-      RES_DIR: res                  # <-- Optional: folder with images/sounds
+      MAIN_CLASS: dnd.Main
+      SRC_DIR: dnd
 
     steps:
       - name: Checkout repository
@@ -42,12 +41,6 @@ jobs:
           mkdir -p build
           find "$SRC_DIR" -name "*.java" > sources.txt
           javac -d build @sources.txt
-
-          # Copy assets into build/ if the resource folder exists
-          if [ -d "$RES_DIR" ]; then
-            cp -r "$RES_DIR"/* build/
-          fi
-
           jar cfe "$JAR_NAME" "$MAIN_CLASS" -C build .
 
       - name: Assemble Pages site folder
