@@ -5,6 +5,8 @@ This is my program for while loops
 This program contains a function that we will get a
 lot of use out of!!  Keep this forever!!
 */
+package dnd;
+
 import javax.swing.*;
 
 public class rileyFunctions

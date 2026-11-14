@@ -3,6 +3,8 @@ Riley and Peyton Howardsmith
 5/9/2022
 This is the class to create players.
 */
+package dnd;
+
 import javax.swing.*;
 
 public class Player extends Character

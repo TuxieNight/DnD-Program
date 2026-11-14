@@ -1,6 +1,8 @@
 /*
 Riley Howardsmith and Peyton Howardsmith
   */
+package dnd;
+
 import javax.swing.*;
 import java.util.*;
 

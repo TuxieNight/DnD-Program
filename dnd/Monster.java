@@ -3,6 +3,8 @@ Riley and Peyton are awesome
 5/11/2022
 This class helps creates the monsters, including their stats
 */
+package dnd;
+
 public class Monster extends Character
 {
 private int monsterStrength, monsterAttack, monsterHarm, stunned = 0;
