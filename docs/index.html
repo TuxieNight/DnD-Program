@@ -25,9 +25,12 @@
       
       // Create the display area (adjust width and height to match your game window)
       cheerpjCreateDisplay(800, 600);
+
+      // Dynamically resolve the repo subpath so /app/ always finds my-game.jar
+      const basePath = window.location.pathname.replace(/\/[^/]*$/, "");
       
       // Run your JAR file (/app/ maps to the root of your GitHub Pages site)
-      await cheerpjRunJar("/app/my-game.jar");
+      await cheerpjRunJar(`/app${basePath}/my-game.jar`);
     })();
   </script>
 </body>
