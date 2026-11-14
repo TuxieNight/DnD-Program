@@ -30,17 +30,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Set up Java 8 JDK
+      - name: Set up Java 21 JDK
         uses: actions/setup-java@v6
         with:
-          java-version: '8'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Compile and package JAR
         run: |
           mkdir -p build
           find "$SRC_DIR" -name "*.java" > sources.txt
-          javac -d build @sources.txt
+          javac --release 11 -d build @sources.txt
           jar cfe "$JAR_NAME" "$MAIN_CLASS" -C build .
 
       - name: Assemble Pages site folder
